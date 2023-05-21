@@ -1,0 +1,27 @@
+{
+  "name": "vjoy-via-lan",
+  "version": "1.0.0",
+  "description": "enjoy vjoy via lan :)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goldnite/vjoy-via-lan.git"
+  },
+  "keywords": [
+    "vjoy",
+    "lan",
+    "game"
+  ],
+  "author": "goldnite",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/goldnite/vjoy-via-lan/issues"
+  },
+  "homepage": "https://github.com/goldnite/vjoy-via-lan#readme",
+  "dependencies": {
+    "vjoy": "^1.2.2"
+  }
+}
