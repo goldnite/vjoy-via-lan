@@ -4,6 +4,8 @@
   "description": "enjoy vjoy via lan :)",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
+    "server": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +24,12 @@
   },
   "homepage": "https://github.com/goldnite/vjoy-via-lan#readme",
   "dependencies": {
-    "vjoy": "^1.2.2"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "vjoy": "^1.2.2",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }

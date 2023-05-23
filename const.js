@@ -1,17 +1,17 @@
-const buttons = [
-  'X',
-  'A',
-  'B',
-  'Y',
-  'LT',
-  'RT',
-  'LB',
-  'RB',
-  'ESC',
-  'MENU',
-  'LS',
-  'RS',
-];
+const buttons = {
+  X: 1,
+  A: 2,
+  B: 3,
+  Y: 4,
+  LT: 5,
+  RT: 6,
+  LB: 7,
+  RB: 8,
+  ESC: 9,
+  MENU: 10,
+  LS: 11,
+  RS: 12,
+};
 
 const axes = {
   LSU: 'Y-',
@@ -22,13 +22,6 @@ const axes = {
   RSL: 'Rx-',
   RSD: 'Ry+',
   RSR: 'Rx+',
-};
-
-const POV = {
-  U: 0,
-  R: 1,
-  D: 2,
-  L: 3,
 };
 
 const axisNames = [
@@ -47,6 +40,5 @@ const axisNames = [
 module.exports = {
   buttons,
   axes,
-  POV,
   axisNames,
 };
