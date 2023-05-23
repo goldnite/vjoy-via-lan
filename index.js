@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 const { WebSocketServer } = require('ws');
 const { vJoy, vJoyDevice } = require('vjoy');
-const { buttons, axes, axisNames } = require('./const.js');
+const { buttons, axes, POVs, axisNames } = require('./const.js');
 require('dotenv').config();
 
 const MAX_AXIS = 0x8000;
@@ -49,10 +49,22 @@ const main = async () => {
     ws.on('error', console.error);
 
     ws.on('message', function message(data) {
-      console.log('received: %s', data);
+      msg = JSON.parse(data);
+      const { k: key, v: val } = msg;
+      if (buttons[key]) {
+        device.buttons[buttons[key]].set(val > 0 ? true : false);
+      } else if (axes[key]) {
+        const value =
+          val > 0
+            ? key.endsWith('U') || key.endsWith('L')
+              ? MIN_AXIS
+              : MAX_AXIS
+            : MID_AXIS;
+        device.axes[axes[key]].set(value);
+      } else if (POVs[key] !== undefined) {
+        device.discretePOV[1].set(val > 0 ? POVs[key] : -1);
+      }
     });
-
-    ws.send('something');
   });
 };
 

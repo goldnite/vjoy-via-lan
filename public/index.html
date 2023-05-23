@@ -12,34 +12,33 @@
     <div id="root"></div>
     <script type="text/babel">
       const { useState, useEffect } = React;
+      const keymap = {
+        X: 'KeyA', // kick
+        A: 'KeyS', // pass
+        B: 'KeyD', // loft pass
+        Y: 'KeyW', // through pass
+        LT: 'KeyZ',
+        RT: 'KeyC',
+        LB: 'KeyQ',
+        RB: 'KeyE',
+        ESC: 'KeyR',
+        MENU: 'KeyB',
+        LS: 'Digit1',
+        RS: 'Digit2',
+        LSU: 'KeyI',
+        LSL: 'KeyJ',
+        LSD: 'KeyK',
+        LSR: 'KeyL',
+        RSU: 'KeyT',
+        RSL: 'KeyF',
+        RSD: 'KeyV',
+        RSR: 'KeyG',
+        U: 'ArrowUp',
+        L: 'ArrowLeft',
+        D: 'ArrowDown',
+        R: 'ArrowRight',
+      };
       function MyApp() {
-        const [keymap, setKeyMap] = useState({
-          X: 'KeyA', // kick
-          A: 'KeyS', // pass
-          B: 'KeyD', // loft pass
-          Y: 'KeyW', // through pass
-          LT: 'KeyZ',
-          RT: 'KeyC',
-          LB: 'KeyQ',
-          RB: 'KeyE',
-          ESC: 'KeyR',
-          MENU: 'KeyB',
-          LS: 'Digit1',
-          RS: 'Digit2',
-          LSU: 'KeyI',
-          LSL: 'KeyJ',
-          LSD: 'KeyK',
-          LSR: 'KeyL',
-          RSU: 'KeyT',
-          RSL: 'KeyF',
-          RSD: 'KeyV',
-          RSR: 'KeyG',
-          U: 'ArrowUp',
-          L: 'ArrowLeft',
-          D: 'ArrowDown',
-          R: 'ArrowRight',
-        });
-
         useEffect(() => {});
         return <h1></h1>;
       }
@@ -47,20 +46,47 @@
       const container = document.getElementById('root');
       const root = ReactDOM.createRoot(container);
       root.render(<MyApp />);
+      let ws;
       addEventListener('keydown', (e) => {
-        if (!e.repeat) console.log('keydown :>> ', e.code);
+        if (!e.repeat) {
+          Object.keys(keymap).forEach((v) => {
+            if (e.code == keymap[v]) {
+              ws.send(
+                JSON.stringify({
+                  k: v,
+                  v: 1,
+                })
+              );
+            }
+          });
+        }
       });
       addEventListener('keyup', (e) => {
-        console.log('keyup :>> ', e.code);
+        Object.keys(keymap).forEach((v) => {
+          if (e.code == keymap[v]) {
+            ws.send(
+              JSON.stringify({
+                k: v,
+                v: 0,
+              })
+            );
+          }
+        });
       });
-      const ws = new WebSocket('ws://localhost:3001');
-      ws.onopen((e) => {
-        console.log('e :>> ', e);
-        ws.send('abc');
-      });
-      ws.onclose((e) => {
-        console.log('e :>> ', e);
-      });
+      function connect() {
+        ws = new WebSocket('ws://10.10.15.170:3001');
+        ws.onopen = function (evt) {
+          console.log('connected to server');
+        };
+        ws.onmessage = function (evt) {
+          console.log(`data from server: ${evt.data}`);
+        };
+        ws.onclose = function () {
+          console.log('try reconnecting');
+          connect();
+        };
+      }
+      connect();
     </script>
   </body>
 </html>

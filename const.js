@@ -14,14 +14,20 @@ const buttons = {
 };
 
 const axes = {
-  LSU: 'Y-',
-  LSL: 'X-',
-  LSD: 'Y+',
-  LSR: 'X+',
-  RSU: 'Ry-',
-  RSL: 'Rx-',
-  RSD: 'Ry+',
-  RSR: 'Rx+',
+  LSU: 'Y',
+  LSL: 'X',
+  LSD: 'Y',
+  LSR: 'X',
+  RSU: 'Ry',
+  RSL: 'Rx',
+  RSD: 'Ry',
+  RSR: 'Rx',
+};
+const POVs = {
+  U: 0,
+  L: 3,
+  D: 2,
+  R: 1,
 };
 
 const axisNames = [
@@ -40,5 +46,6 @@ const axisNames = [
 module.exports = {
   buttons,
   axes,
+  POVs,
   axisNames,
 };
