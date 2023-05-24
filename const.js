@@ -49,3 +49,30 @@ module.exports = {
   POVs,
   axisNames,
 };
+
+const preferredKeyMap = {
+  X: 'KeyA', // kick
+  A: 'KeyS', // pass
+  B: 'KeyD', // loft pass
+  Y: 'KeyW', // through pass
+  LT: 'KeyZ',
+  RT: 'KeyC',
+  LB: 'KeyQ',
+  RB: 'KeyE',
+  ESC: 'KeyR',
+  MENU: 'KeyB',
+  LS: 'Digit1',
+  RS: 'Digit2',
+  LSU: 'KeyI',
+  LSL: 'KeyJ',
+  LSD: 'KeyK',
+  LSR: 'KeyL',
+  RSU: 'KeyT',
+  RSL: 'KeyF',
+  RSD: 'KeyV',
+  RSR: 'KeyG',
+  U: 'ArrowUp',
+  L: 'ArrowLeft',
+  D: 'ArrowDown',
+  R: 'ArrowUpRight',
+};
