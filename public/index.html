@@ -3,9 +3,9 @@
     <title>Express</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="/scripts/react.development.js"></script>
+    <script src="/scripts/react-dom.development.js"></script>
+    <script src="/scripts/babel.min.js"></script>
   </head>
 
   <body>
@@ -38,18 +38,37 @@
         D: 'Numpad2',
         R: 'Numpad6',
       };
-      const keymap = defaultKeyMap;
-      function MyApp() {
-        useEffect(() => {});
-        return <div></div>;
-      }
+      const keymap = {
+        X: 'KeyA', // kick
+        A: 'KeyS', // pass
+        B: 'KeyD', // loft pass
+        Y: 'KeyW', // through pass
+        LT: 'KeyZ',
+        RT: 'KeyC',
+        LB: 'KeyQ',
+        RB: 'KeyE',
+        ESC: 'KeyR',
+        MENU: 'KeyB',
+        LS: 'Digit1',
+        RS: 'Digit2',
+        LSU: 'KeyI',
+        LSL: 'KeyJ',
+        LSD: 'KeyK',
+        LSR: 'KeyL',
+        RSU: 'KeyT',
+        RSL: 'KeyF',
+        RSD: 'KeyV',
+        RSR: 'KeyG',
+        U: 'ArrowUp',
+        L: 'ArrowLeft',
+        D: 'ArrowDown',
+        R: 'ArrowUpRight',
+      };
 
-      const container = document.getElementById('root');
-      const root = ReactDOM.createRoot(container);
-      root.render(<MyApp />);
       let ws;
       addEventListener('keydown', (e) => {
         if (!e.repeat) {
+          console.log('e.code :>> ', e.code);
           Object.keys(keymap).forEach((v) => {
             if (e.code == keymap[v]) {
               ws.send(
@@ -88,6 +107,88 @@
         };
       }
       connect();
+
+      function MyApp() {
+        const leftButtons = [
+          'LT',
+          'LB',
+          'U',
+          'L',
+          'D',
+          'R',
+          'LSU',
+          'LSL',
+          'LSD',
+          'LSR',
+          'LS',
+          'MENU',
+        ];
+        const rightButtons = [
+          'RT',
+          'RB',
+          'Y',
+          'X',
+          'A',
+          'B',
+          'RSU',
+          'RSL',
+          'RSD',
+          'RSR',
+          'RS',
+          'ESC',
+        ];
+        useEffect(() => {});
+        return (
+          <div>
+            <div className='rowContainer'>
+              <div className='columnContainer'>
+                {leftButtons.map((item) => (
+                  <div className='rowContainer'>
+                    <img src={`/images/${item}.png`} alt={item} />
+                    <button className='keyButton'>{keymap[item]}</button>
+                  </div>
+                ))}
+              </div>
+              <div className='columnContainer'>
+                <img src='/images/joystick.png' alt='joystick' />
+              </div>
+              <div className='columnContainer'>
+                {rightButtons.map((item) => (
+                  <div className='rowContainer'>
+                    <img src={`/images/${item}.png`} alt={item} />
+                    <button className='keyButton'>{keymap[item]}</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
     </script>
+    <style>
+      .rowContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+      }
+      .columnContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+      }
+      .keyButton {
+        width: 100px;
+        height: 20px;
+        background-color: #e1e1e1;
+        border: 1px #adadad solid;
+      }
+    </style>
   </body>
 </html>
