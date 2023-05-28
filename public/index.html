@@ -62,7 +62,7 @@
         U: 'ArrowUp',
         L: 'ArrowLeft',
         D: 'ArrowDown',
-        R: 'ArrowUpRight',
+        R: 'ArrowRight',
       };
 
       let ws;
@@ -137,26 +137,57 @@
           'RS',
           'ESC',
         ];
+        const [waitFor, setWaitFor] = useState('');
         useEffect(() => {});
         return (
           <div>
             <div className='rowContainer'>
               <div className='columnContainer'>
-                {leftButtons.map((item) => (
-                  <div className='rowContainer'>
+                {leftButtons.map((item, index) => (
+                  <div className='rowContainer' key={index}>
                     <img src={`/images/${item}.png`} alt={item} />
-                    <button className='keyButton'>{keymap[item]}</button>
+                    <button
+                      className='keyButton'
+                      onClick={(e) => {
+                        setWaitFor(item);
+                      }}
+                    >
+                      {waitFor == item
+                        ? 'Press the key'
+                        : keymap[item]
+                            .replace('Key', '')
+                            .replace('Arrow', '')
+                            .replace('Digit', '')}
+                    </button>
                   </div>
                 ))}
               </div>
-              <div className='columnContainer'>
+              <div
+                className='columnContainer'
+                style={{ margin: '20px', gap: '50px' }}
+              >
                 <img src='/images/joystick.png' alt='joystick' />
+                <button
+                  style={{
+                    width: '300px',
+                    height: '30px',
+                    backgroundColor: '#e1e1e1',
+                    border: '1px #adadad solid',
+                  }}
+                >
+                  Revert to Default Settings
+                </button>
               </div>
               <div className='columnContainer'>
-                {rightButtons.map((item) => (
-                  <div className='rowContainer'>
+                {rightButtons.map((item, index) => (
+                  <div className='rowContainer' key={index}>
                     <img src={`/images/${item}.png`} alt={item} />
-                    <button className='keyButton'>{keymap[item]}</button>
+                    <button className='keyButton'>
+                      {keymap[item]
+                        .replace('Key', '')
+                        .replace('Arrow', '')
+                        .replace('Digit', '')}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -188,6 +219,9 @@
         height: 20px;
         background-color: #e1e1e1;
         border: 1px #adadad solid;
+      }
+      button:active {
+        border-color: skyblue;
       }
     </style>
   </body>

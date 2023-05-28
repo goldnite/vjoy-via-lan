@@ -74,5 +74,5 @@ const preferredKeyMap = {
   U: 'ArrowUp',
   L: 'ArrowLeft',
   D: 'ArrowDown',
-  R: 'ArrowUpRight',
+  R: 'ArrowRight',
 };
