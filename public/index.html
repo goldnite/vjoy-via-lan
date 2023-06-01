@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Express</title>
+    <title>vjoy-via-lan</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <script src="/scripts/react.development.js"></script>
@@ -11,7 +11,7 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
-      const { useState, useEffect } = React;
+      const { useCallback, useEffect, useState } = React;
       const defaultKeyMap = {
         X: 'KeyA', // kick
         A: 'KeyX', // pass
@@ -38,75 +38,6 @@
         D: 'Numpad2',
         R: 'Numpad6',
       };
-      const keymap = {
-        X: 'KeyA', // kick
-        A: 'KeyS', // pass
-        B: 'KeyD', // loft pass
-        Y: 'KeyW', // through pass
-        LT: 'KeyZ',
-        RT: 'KeyC',
-        LB: 'KeyQ',
-        RB: 'KeyE',
-        ESC: 'KeyR',
-        MENU: 'KeyB',
-        LS: 'Digit1',
-        RS: 'Digit2',
-        LSU: 'KeyI',
-        LSL: 'KeyJ',
-        LSD: 'KeyK',
-        LSR: 'KeyL',
-        RSU: 'KeyT',
-        RSL: 'KeyF',
-        RSD: 'KeyV',
-        RSR: 'KeyG',
-        U: 'ArrowUp',
-        L: 'ArrowLeft',
-        D: 'ArrowDown',
-        R: 'ArrowRight',
-      };
-
-      let ws;
-      addEventListener('keydown', (e) => {
-        if (!e.repeat) {
-          console.log('e.code :>> ', e.code);
-          Object.keys(keymap).forEach((v) => {
-            if (e.code == keymap[v]) {
-              ws.send(
-                JSON.stringify({
-                  k: v,
-                  v: 1,
-                })
-              );
-            }
-          });
-        }
-      });
-      addEventListener('keyup', (e) => {
-        Object.keys(keymap).forEach((v) => {
-          if (e.code == keymap[v]) {
-            ws.send(
-              JSON.stringify({
-                k: v,
-                v: 0,
-              })
-            );
-          }
-        });
-      });
-      function connect() {
-        ws = new WebSocket('ws://10.10.15.170:3001');
-        ws.onopen = function (evt) {
-          console.log('connected to server');
-        };
-        ws.onmessage = function (evt) {
-          console.log(`data from server: ${evt.data}`);
-        };
-        ws.onclose = function () {
-          console.log('try reconnecting');
-          connect();
-        };
-      }
-      connect();
 
       function MyApp() {
         const leftButtons = [
@@ -137,8 +68,110 @@
           'RS',
           'ESC',
         ];
+
+        const [keymap, setKeymap] = useState({
+          X: 'KeyA', // kick
+          A: 'KeyS', // pass
+          B: 'KeyD', // loft pass
+          Y: 'KeyW', // through pass
+          LT: 'KeyZ',
+          RT: 'KeyC',
+          LB: 'KeyQ',
+          RB: 'KeyE',
+          ESC: 'KeyR',
+          MENU: 'KeyB',
+          LS: 'Digit1',
+          RS: 'Digit2',
+          LSU: 'KeyI',
+          LSL: 'KeyJ',
+          LSD: 'KeyK',
+          LSR: 'KeyL',
+          RSU: 'KeyT',
+          RSL: 'KeyF',
+          RSD: 'KeyV',
+          RSR: 'KeyG',
+          U: 'ArrowUp',
+          L: 'ArrowLeft',
+          D: 'ArrowDown',
+          R: 'ArrowRight',
+        });
         const [waitFor, setWaitFor] = useState('');
-        useEffect(() => {});
+        const [ws, setWS] = useState('');
+
+        const keydownHandler = useCallback(
+          (e) => {
+            if (waitFor != '') {
+              Object.keys(keymap).forEach((key) => {
+                if (keymap[key] == e.code) keymap[key] = '';
+              });
+              keymap[waitFor] = e.code;
+              setKeymap(keymap);
+              setWaitFor('');
+              return;
+            }
+            if (!e.repeat) {
+              Object.keys(keymap).forEach((v) => {
+                if (e.code == keymap[v]) {
+                  ws.send(
+                    JSON.stringify({
+                      k: v,
+                      v: 1,
+                    })
+                  );
+                }
+              });
+            }
+          },
+          [waitFor, ws]
+        );
+
+        const keyupHandler = useCallback(
+          (e) => {
+            Object.keys(keymap).forEach((v) => {
+              if (e.code == keymap[v]) {
+                ws.send(
+                  JSON.stringify({
+                    k: v,
+                    v: 0,
+                  })
+                );
+              }
+            });
+          },
+          [ws]
+        );
+
+        useEffect(() => {
+          document.addEventListener('keydown', keydownHandler, false);
+          document.addEventListener('keyup', keyupHandler, false);
+          return () => {
+            document.removeEventListener('keydown', keydownHandler, false);
+            document.removeEventListener('keyup', keyupHandler, false);
+          };
+        }, [keydownHandler, keyupHandler]);
+        const connect = useCallback(() => {
+          const location = window.location;
+          const ws_url =
+            location.protocol === 'https:'
+              ? 'wss:'
+              : 'ws:' + '//' + location.hostname + ':3001';
+          const wsc = new WebSocket(ws_url);
+          wsc.onopen = function (evt) {
+            console.log('connected to server');
+          };
+          wsc.onmessage = function (evt) {
+            console.log(`data from server: ${evt.data}`);
+          };
+          wsc.onclose = function () {
+            console.log('try reconnecting');
+            connect();
+          };
+          setWS(wsc);
+        });
+        useEffect(() => {
+          connect();
+        }, []);
+
         return (
           <div>
             <div className='rowContainer'>
@@ -166,13 +199,16 @@
                 className='columnContainer'
                 style={{ margin: '20px', gap: '50px' }}
               >
-                <img src='/images/joystick.png' alt='joystick' />
+                <img src='/images/xbox-controller.png' alt='xbox-controller' />
                 <button
                   style={{
                     width: '300px',
                     height: '30px',
                     backgroundColor: '#e1e1e1',
                     border: '1px #adadad solid',
+                  }}
+                  onClick={(e) => {
+                    setKeymap(defaultKeyMap);
                   }}
                 >
                   Revert to Default Settings
@@ -182,11 +218,18 @@
                 {rightButtons.map((item, index) => (
                   <div className='rowContainer' key={index}>
                     <img src={`/images/${item}.png`} alt={item} />
-                    <button className='keyButton'>
-                      {keymap[item]
-                        .replace('Key', '')
-                        .replace('Arrow', '')
-                        .replace('Digit', '')}
+                    <button
+                      className='keyButton'
+                      onClick={(e) => {
+                        setWaitFor(item);
+                      }}
+                    >
+                      {waitFor == item
+                        ? 'Press the key'
+                        : keymap[item]
+                            .replace('Key', '')
+                            .replace('Arrow', '')
+                            .replace('Digit', '')}
                     </button>
                   </div>
                 ))}
